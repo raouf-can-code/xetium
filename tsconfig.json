@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Modern JS features
+    "module": "ESNext", // Output ES modules
+    "moduleResolution": "node", // Resolve modules like Node.js,
+    "resolveJsonModule": true,
+    "strict": true, // Enable strict type checks
+    "esModuleInterop": true, // Enable import compatibility
+    "skipLibCheck": true // Skip type checking of libraries for faster builds
+  },
+  "include": ["src/**/*"] // Include all TS files in src folder
+}
