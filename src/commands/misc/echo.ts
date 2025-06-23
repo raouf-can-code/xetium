@@ -17,7 +17,8 @@ export default {
   dmPermission: false,
   callback: async (client: Client, int: any) => {
     const msg = int.options.get("message").value;
-    await int.reply(msg);
+    await int.channel?.send(msg);
+    await int.reply({ content: "done", ephemeral: true });
     return;
   },
 };

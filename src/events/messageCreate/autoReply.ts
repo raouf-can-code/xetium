@@ -23,6 +23,7 @@ const replies: Reply[] = [
   },
   { msg: ["هلا", "اهلا"], msgReply: ["اهلا بك"], inc: false },
   { msg: ["."], msgReply: ["تحاول تثبت وجودك؟"], inc: false },
+  { msg: ["عبد ديسكوردي"], msgReply: ["انت العبد", "اص"], inc: true },
 ];
 export default async function (msg: Message, client: Client) {
   if (msg.author.bot) return;
