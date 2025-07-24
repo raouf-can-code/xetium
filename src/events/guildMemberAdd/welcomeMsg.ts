@@ -8,7 +8,7 @@ export default async function (member: GuildMember, client: Client) {
   const newMmbr = member.user;
   const targetChannelID = "1245634814913286254"; //add  the id of the channel that you want the bot to welcome the new member
   const channel = client.channels.cache.get(targetChannelID);
-  const msg = `اهلا و سهلا بك يا ${newMmbr.username}!\nمرحبا بك في سيرفر ${member.guild.name}\n نتمنى لك وقتا ممتعا مليئا بالعلم و المعرفة`; //add the message
+  const msg = `اهلا و سهلا بك يا <@${newMmbr.id}>!\nمرحبا بك في سيرفر ${member.guild.name}\n نتمنى لك وقتا ممتعا مليئا بالعلم و المعرفة`; //add the message
   try {
     if (channel && channel.isTextBased())
       await (channel as TextChannel).send(msg);
