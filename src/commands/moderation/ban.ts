@@ -1,18 +1,23 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits, type Client } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
+  type Client,
+} from "discord.js";
 
 export default {
   name: "ban",
-  description: "ban someone from the server",
+  description:
+    "help someone retier discord with banning him from the server :)",
   options: [
     {
       name: "target",
-      description: "the user that you want to ban",
-      type: ApplicationCommandOptionType.Mentionable,
+      description: "The user to ban (mention or ID)",
+      type: ApplicationCommandOptionType.String,
       required: true,
     },
     {
       name: "reason",
-      description: "the reason to ban this user",
+      description: "The reason for the ban",
       type: ApplicationCommandOptionType.String,
     },
   ],
@@ -23,50 +28,48 @@ export default {
   botPermissions: [PermissionFlagsBits.BanMembers],
 
   callback: async (client: Client, int: any) => {
-    const targetUserID = int.options.get("target").value;
-    const reason: string = int.options.get("reason")?.value || "no reason provided";
+    const targetInput = int.options.getString("target");
+    const reason: string =
+      int.options.getString("reason") || "no reason provided";
+
+    const targetUserID = targetInput.replace(/[<@!>]/g, "");
 
     await int.deferReply();
-    const targetUser = await int.guild.members.fetch(targetUserID);
 
-    if (!targetUser) {
-      await int.editReply("this user is not in the server");
-      return;
+    let targetUser;
+    try {
+      targetUser = await int.guild.members.fetch(targetUserID);
+    } catch {
+      return int.editReply("Could not find that user in the server.");
     }
+
     if (targetUser.id === int.guild.ownerId) {
-      await int.editReply("trying to ban the server owner is a great idea");
-      return;
+      return int.editReply("Trying to ban the server owner is great idea.");
     }
 
-    if (int.user.id === int.guild.ownerId) {
-      try {
-        await targetUser.ban({ reason: reason });
-        await int.editReply(`${targetUser} was banned from the server\nreason: ${reason}`);
-      } catch (err) {
-        console.error(err);
-        int.editReply("there was an error during the process");
-      }
-    }
-
-    const targetUserRolePosition = targetUser.roles.highest.position; // the target users
-    const requestUserRolePosition = int.member.roles.highest.position; // the user that runs the command
-    const botRolePosition = int.guild.members.me.roles.highest.position; // bot
+    const targetUserRolePosition = targetUser.roles.highest.position;
+    const requestUserRolePosition = int.member.roles.highest.position;
+    const botRolePosition = int.guild.members.me.roles.highest.position;
 
     if (targetUserRolePosition >= requestUserRolePosition) {
-      await int.editReply("you can't ban that user because he/she has same/higher role then you");
-      return;
+      return int.editReply(
+        "You can't ban that user because they have the same or a higher role than you.",
+      );
     }
     if (targetUserRolePosition >= botRolePosition) {
-      await int.editReply("I can't ban that user because he/she has same/higher role then me");
-      return;
+      return int.editReply(
+        "I can't ban that user because they have the same or a higher role than me.",
+      );
     }
 
     try {
-      await targetUser.ban({ reason: reason });
-      await int.editReply(`${targetUser} was banned from the server\nreason: ${reason}`);
+      await targetUser.ban({ reason });
+      await int.editReply(
+        `${targetUser.user.tag} was banned from the server.\nReason: ${reason}`,
+      );
     } catch (err) {
       console.error(err);
-      int.editReply({ content: "an error happend during the process", ephemeral: true });
+      await int.editReply("An error occurred during the ban process.");
     }
   },
 };
